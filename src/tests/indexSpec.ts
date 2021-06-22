@@ -1,8 +1,6 @@
 import supertest from "supertest";
 import app from "../index";
 
-//clearing thumb folder before All tests
-
 const request = supertest(app);
 
 describe("Endpoint responses", () => {
