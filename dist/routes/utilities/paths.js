@@ -48,7 +48,7 @@ var getFileName = function (req, res) { return __awaiter(void 0, void 0, void 0,
         return [2 /*return*/, queryFileName];
     });
 }); };
-//this gets the output filename for checking cached images or saving
+//this gets the output filename for checking cached images
 var getOutputFile = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var outputPath;
     return __generator(this, function (_a) {

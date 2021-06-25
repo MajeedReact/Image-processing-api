@@ -10,7 +10,6 @@ app.get('/', (req: express.Request, res: express.Response): void => {
 
 app.use('/api', index);
 
-//filename, height, width
 app.listen(port, (): void => {
   console.log(`Listening to http://localhost:${port}`);
 });

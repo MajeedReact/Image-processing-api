@@ -12,7 +12,7 @@ const getFileName = async (
   return queryFileName;
 };
 
-//this gets the output filename for checking cached images or saving
+//this gets the output filename for checking cached images
 const getOutputFile = async (
   req: express.Request,
   res: express.Response

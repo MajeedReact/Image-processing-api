@@ -11,7 +11,6 @@ app.get('/', function (req, res) {
     res.send('server working as intended');
 });
 app.use('/api', index_1.default);
-//filename, height, width
 app.listen(port, function () {
     console.log("Listening to http://localhost:" + port);
 });
