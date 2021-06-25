@@ -1,40 +1,35 @@
-import express, { json } from "express";
-import sharp from "sharp";
-import checker from "./checkImage";
-import file from "./paths";
+import express from 'express';
+import checker from './checkImage';
+import file from './paths';
+import resizing from './resizeImage';
 
 //this function rezise the image and gets the file input and sends it to the output directory
 const sharpResize = async (
   req: express.Request,
   res: express.Response,
   next: Function
-) => {
+): Promise<void> => {
   try {
-    const filePath = await file.getFileName(req, res);
-    const outputPath = await file.getOutputFile(req, res);
+    const filePath: string = await file.getFileName(req, res);
+    const outputPath: string = await file.getOutputFile(req, res);
 
     //converting height and width from string to a number
     const height = Number(req.query.height) as number;
     const width = Number(req.query.width) as number;
 
-    const check = async () => {
-      const test = checker.fileExistsSync(outputPath);
-      return test;
-    };
-
     //if file exists in thumb with same height and width then load the cached image
-    if (await check()) {
-      console.log("Cached image loaded");
+    if (checker.fileExistsSync(outputPath)) {
+      console.log('Cached image loaded');
       next();
-    } else if ((await checker.fileExistsSync(filePath)) == false) {
+    } else if (!checker.fileExistsSync(filePath)) {
       res.status(400).send(`Input file is missing`);
       next();
-    } else if (height <= 0 || width <= 0) {
+    } else if (!checker.isPositive(height, width)) {
       res
         .status(400)
         .send(`Invalid height or width. height:${height}, width:${width}`);
       next();
-    } else if (isNaN(height) || isNaN(width)) {
+    } else if (!checker.isNumber(height, width)) {
       res
         .status(400)
         .send(
@@ -42,17 +37,12 @@ const sharpResize = async (
         );
       next();
     } else {
-      console.log("Resizing the orginal image with sharp");
-      await sharp(filePath)
-        .resize(height, width)
-        .jpeg({
-          quality: 90,
-        })
-        .toFile(outputPath);
+      console.log('Resizing the orginal image with sharp');
+      await resizing(filePath, outputPath, height, width);
       next();
     }
   } catch (err) {
-    res.send("An Error occured processing your image :/ \n" + err);
+    res.send('An Error occured processing your image :/ \n' + err);
   }
 };
 

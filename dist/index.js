@@ -7,10 +7,10 @@ var express_1 = __importDefault(require("express"));
 var index_1 = __importDefault(require("./routes/index"));
 var app = express_1.default();
 var port = 3000;
-app.get("/", function (req, res) {
-    res.send("server working as intended");
+app.get('/', function (req, res) {
+    res.send('server working as intended');
 });
-app.use("/api", index_1.default);
+app.use('/api', index_1.default);
 //filename, height, width
 app.listen(port, function () {
     console.log("Listening to http://localhost:" + port);

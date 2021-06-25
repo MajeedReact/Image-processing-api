@@ -41,16 +41,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var middlewareSharp_1 = __importDefault(require("../utilities/middlewareSharp"));
-var path = require("path");
+var path = require('path');
 var image = express_1.default.Router();
-image.get("/", middlewareSharp_1.default, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+image.get('/', middlewareSharp_1.default, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         try {
             res.sendFile(path.resolve(__dirname +
                 ("../../../../images/thumb/" + req.query.filename + req.query.height + "x" + req.query.width + ".jpg")));
         }
         catch (err) {
-            res.send("an error occured :/" + err);
+            res.send('an error occured :/' + err);
         }
         return [2 /*return*/];
     });

@@ -39,75 +39,60 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var sharp_1 = __importDefault(require("sharp"));
 var checkImage_1 = __importDefault(require("./checkImage"));
 var paths_1 = __importDefault(require("./paths"));
+var resizeImage_1 = __importDefault(require("./resizeImage"));
 //this function rezise the image and gets the file input and sends it to the output directory
 var sharpResize = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var filePath, outputPath_1, height, width, check, err_1;
+    var filePath, outputPath, height, width, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 11, , 12]);
+                _a.trys.push([0, 9, , 10]);
                 return [4 /*yield*/, paths_1.default.getFileName(req, res)];
             case 1:
                 filePath = _a.sent();
                 return [4 /*yield*/, paths_1.default.getOutputFile(req, res)];
             case 2:
-                outputPath_1 = _a.sent();
+                outputPath = _a.sent();
                 height = Number(req.query.height);
                 width = Number(req.query.width);
-                check = function () { return __awaiter(void 0, void 0, void 0, function () {
-                    var test;
-                    return __generator(this, function (_a) {
-                        test = checkImage_1.default.fileExistsSync(outputPath_1);
-                        return [2 /*return*/, test];
-                    });
-                }); };
-                return [4 /*yield*/, check()];
-            case 3:
-                if (!_a.sent()) return [3 /*break*/, 4];
-                console.log("Cached image loaded");
+                if (!checkImage_1.default.fileExistsSync(outputPath)) return [3 /*break*/, 3];
+                console.log('Cached image loaded');
                 next();
-                return [3 /*break*/, 10];
-            case 4: return [4 /*yield*/, checkImage_1.default.fileExistsSync(filePath)];
-            case 5:
-                if (!((_a.sent()) == false)) return [3 /*break*/, 6];
+                return [3 /*break*/, 8];
+            case 3:
+                if (!!checkImage_1.default.fileExistsSync(filePath)) return [3 /*break*/, 4];
                 res.status(400).send("Input file is missing");
                 next();
-                return [3 /*break*/, 10];
-            case 6:
-                if (!(height <= 0 || width <= 0)) return [3 /*break*/, 7];
+                return [3 /*break*/, 8];
+            case 4:
+                if (!!checkImage_1.default.isPositive(height, width)) return [3 /*break*/, 5];
                 res
                     .status(400)
                     .send("Invalid height or width. height:" + height + ", width:" + width);
                 next();
-                return [3 /*break*/, 10];
-            case 7:
-                if (!(isNaN(height) || isNaN(width))) return [3 /*break*/, 8];
+                return [3 /*break*/, 8];
+            case 5:
+                if (!!checkImage_1.default.isNumber(height, width)) return [3 /*break*/, 6];
                 res
                     .status(400)
                     .send("Expected to recieve a number for height and width but instead recieved a character, height:" + height + " width:" + width);
                 next();
-                return [3 /*break*/, 10];
-            case 8:
-                console.log("Resizing the orginal image with sharp");
-                return [4 /*yield*/, sharp_1.default(filePath)
-                        .resize(height, width)
-                        .jpeg({
-                        quality: 90,
-                    })
-                        .toFile(outputPath_1)];
-            case 9:
+                return [3 /*break*/, 8];
+            case 6:
+                console.log('Resizing the orginal image with sharp');
+                return [4 /*yield*/, resizeImage_1.default(filePath, outputPath, height, width)];
+            case 7:
                 _a.sent();
                 next();
-                _a.label = 10;
-            case 10: return [3 /*break*/, 12];
-            case 11:
+                _a.label = 8;
+            case 8: return [3 /*break*/, 10];
+            case 9:
                 err_1 = _a.sent();
-                res.send("An Error occured processing your image :/ \n" + err_1);
-                return [3 /*break*/, 12];
-            case 12: return [2 /*return*/];
+                res.send('An Error occured processing your image :/ \n' + err_1);
+                return [3 /*break*/, 10];
+            case 10: return [2 /*return*/];
         }
     });
 }); };

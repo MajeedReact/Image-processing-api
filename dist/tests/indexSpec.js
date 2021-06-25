@@ -41,14 +41,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var supertest_1 = __importDefault(require("supertest"));
 var index_1 = __importDefault(require("../index"));
-//clearing thumb folder before All tests
+var resizeImage_1 = __importDefault(require("../routes/utilities/resizeImage"));
+var path_1 = __importDefault(require("path"));
+var checkImage_1 = __importDefault(require("../routes/utilities/checkImage"));
 var request = supertest_1.default(index_1.default);
-describe("Endpoint responses", function () {
-    it("Gets the server status to check if it is connected or not", function () { return __awaiter(void 0, void 0, void 0, function () {
+//Input values used
+var height = 810;
+var width = 320;
+var minusHeight = -810;
+var character = 'a';
+var imageName = 'Jeddah';
+var inputPath = path_1.default.resolve(__dirname + ("../../../images/full/" + imageName + ".jpg"));
+var outputPath = path_1.default.resolve(__dirname + ("../../../images/thumb/" + imageName + height + "x" + width + ".jpg"));
+describe('Endpoint responses', function () {
+    it('Gets the server status to check if it is connected or not', function () { return __awaiter(void 0, void 0, void 0, function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request.get("/api")];
+                case 0: return [4 /*yield*/, request.get('/api')];
                 case 1:
                     response = _a.sent();
                     expect(response.status).toBe(200);
@@ -56,11 +66,11 @@ describe("Endpoint responses", function () {
             }
         });
     }); });
-    it("Should reject request and display input file missing", function () { return __awaiter(void 0, void 0, void 0, function () {
+    it('Should reject request and display input file missing', function () { return __awaiter(void 0, void 0, void 0, function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request.get("/api/image")];
+                case 0: return [4 /*yield*/, request.get('/api/image')];
                 case 1:
                     response = _a.sent();
                     expect(response.status).toBe(400);
@@ -68,11 +78,11 @@ describe("Endpoint responses", function () {
             }
         });
     }); });
-    it("Request accepted and image is either resized or loading the cached image", function () { return __awaiter(void 0, void 0, void 0, function () {
+    it('Request accepted and image is either resized or loading the cached image', function () { return __awaiter(void 0, void 0, void 0, function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request.get("/api/image?filename=fjord&height=300&width=300")];
+                case 0: return [4 /*yield*/, request.get('/api/image?filename=fjord&height=300&width=300')];
                 case 1:
                     response = _a.sent();
                     expect(response.status).toBe(200);
@@ -80,11 +90,11 @@ describe("Endpoint responses", function () {
             }
         });
     }); });
-    it("Should reject request and display Invalid height or width.", function () { return __awaiter(void 0, void 0, void 0, function () {
+    it('Should reject request and display Invalid height or width.', function () { return __awaiter(void 0, void 0, void 0, function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request.get("/api/image?filename=fjord&height=300&width=-300")];
+                case 0: return [4 /*yield*/, request.get('/api/image?filename=fjord&height=300&width=-300')];
                 case 1:
                     response = _a.sent();
                     expect(response.text).toBe("Invalid height or width. height:" + 300 + ", width:" + -300);
@@ -92,16 +102,38 @@ describe("Endpoint responses", function () {
             }
         });
     }); });
-    it("Request is rejected and display Expected to recieve a number for height and width but instead recieved a character", function () { return __awaiter(void 0, void 0, void 0, function () {
+    it('Request is rejected and display Expected to recieve a number for height and width but instead recieved a character', function () { return __awaiter(void 0, void 0, void 0, function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request.get("/api/image?filename=fjord&height=300&width=abc")];
+                case 0: return [4 /*yield*/, request.get('/api/image?filename=fjord&height=abc&width=300')];
                 case 1:
                     response = _a.sent();
-                    expect(response.text).toBe("Expected to recieve a number for height and width but instead recieved a character, height:300 width:NaN");
+                    expect(response.text).toBe("Expected to recieve a number for height and width but instead recieved a character, height:NaN width:300");
                     return [2 /*return*/];
             }
         });
     }); });
+});
+describe('\nTesting Image processing', function () {
+    it('It should create an image with the random values', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _a = expect;
+                    return [4 /*yield*/, resizeImage_1.default(inputPath, outputPath, height, width)];
+                case 1:
+                    _a.apply(void 0, [_b.sent()])
+                        .toHaveBeenCalled;
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('It should reject any height or width that is not positive or equal to zero', function () {
+        expect(checkImage_1.default.isPositive(minusHeight, width)).toBeFalse();
+    });
+    it('It should reject any character that is not a number in height or width', function () {
+        expect(checkImage_1.default.isNumber(height, character)).toBeFalse();
+    });
 });
