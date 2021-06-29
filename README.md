@@ -10,6 +10,6 @@ This is an Image processing API project that was assigned to me through Udacity,
    - Where as fjord is the image name and height is 300 and width 200
    
 3. If the image is being processed for the first time then it will resize it and save it in ( thumb ) folder 
-4. Cache image is loaded if the image is requested with the same height and width that exisits in thumbs folder
+4. Cache image is loaded if the image is requested with the same height and width exisits in thumbs folder
 
 *Note: It uses sharp node package manager to resize and reduce image quality by 10% (for less size) but it is changeable to how you please.*
